@@ -1,0 +1,9 @@
+.git
+.gitignore
+Dockerfile
+.dockerignore
+bin
+config.yml
+config.yml.sample
+LICENSE
+*.md
