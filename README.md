@@ -14,9 +14,9 @@ Recent versions of:
 
 ## Config
 
-Fill values in `config.yaml` or set them as environment variables.
+Create a `config.yml` file and fill values based on `config.yml.example`. Alternatively, set them as environment variables.
 
-To find the environment variables names - uppercase the yaml keys, join them with `_` and add a `MC_` prefix.
+To find the environment variables names - uppercase the YAML keys, join them with `_` and add a `MC_` prefix.
 
 For example the environment variable for
 ```yaml

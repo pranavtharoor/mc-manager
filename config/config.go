@@ -16,6 +16,7 @@ type BotConfiguration struct {
 }
 
 func setDefaults() {
+	viper.SetDefault("bot.token", "")
 	viper.SetDefault("bot.prefix", "!")
 }
 
@@ -28,7 +29,8 @@ func Read() (Configuration, error) {
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 	viper.AutomaticEnv()
 
-	if err := viper.ReadInConfig(); err != nil {
+	err := viper.ReadInConfig()
+	if _, ok := err.(viper.ConfigFileNotFoundError); err != nil && !ok {
 		return c, err
 	}
 
