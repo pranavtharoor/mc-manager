@@ -24,7 +24,7 @@ type Login struct {
 func AccountShow() (bool, Account, error) {
 	var account Account
 
-	err := az(&account, "account", "show")
+	err := az(outTypeJSON, &account, "account", "show")
 
 	if err != nil {
 		expectedErr := "Please run 'az login' to setup account."
@@ -82,7 +82,7 @@ func parseLogin(msg string) Login {
 }
 
 func AccountLogout() (bool, error) {
-	err := az(nil, "logout")
+	err := az(outTypeNil, nil, "logout")
 
 	if err != nil {
 		expectedErr := "There are no active accounts."
@@ -93,4 +93,15 @@ func AccountLogout() (bool, error) {
 	}
 
 	return true, nil
+}
+
+func verifyLoggedIn() error {
+	isLoggedIn, _, err := AccountShow()
+	if err != nil {
+		return err
+	}
+	if !isLoggedIn {
+		return errors.New("no one's logged in")
+	}
+	return nil
 }

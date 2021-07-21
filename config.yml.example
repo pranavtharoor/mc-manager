@@ -1,3 +1,6 @@
 bot:
   token:
   prefix:
+  server:
+    resourceGroup:
+    name:

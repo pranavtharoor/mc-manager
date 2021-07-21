@@ -27,12 +27,12 @@ func azureLogin(send func(string)) {
 }
 
 func azureAccount() string {
-	isLoggedin, account, err := azure.AccountShow()
+	isLoggedIn, account, err := azure.AccountShow()
 	if err != nil {
 		return err.Error()
 	}
 
-	if !isLoggedin {
+	if !isLoggedIn {
 		return "No one's logged in"
 	}
 
@@ -40,12 +40,12 @@ func azureAccount() string {
 }
 
 func azureLogout() string {
-	wasLoggedin, err := azure.AccountLogout()
+	wasLoggedIn, err := azure.AccountLogout()
 	if err != nil {
 		return err.Error()
 	}
 
-	if !wasLoggedin {
+	if !wasLoggedIn {
 		return "No one's logged in"
 	}
 

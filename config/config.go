@@ -11,13 +11,21 @@ type Configuration struct {
 }
 
 type BotConfiguration struct {
-	Token  string `mapstructure:"token"`
-	Prefix string `mapstructure:"prefix"`
+	Token  string              `mapstructure:"token"`
+	Prefix string              `mapstructure:"prefix"`
+	Server ServerConfiguration `mapstructure:"server"`
+}
+
+type ServerConfiguration struct {
+	ResourceGroup string `mapstructure:"resourceGroup"`
+	Name          string `mapstructure:"name"`
 }
 
 func setDefaults() {
 	viper.SetDefault("bot.token", "")
 	viper.SetDefault("bot.prefix", "!")
+	viper.SetDefault("bot.server.resourceGroup", "")
+	viper.SetDefault("bot.server.name", "")
 }
 
 func Read() (Configuration, error) {

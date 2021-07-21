@@ -8,7 +8,7 @@ import (
 )
 
 var botID string
-var botPrefix string
+var botConfig config.BotConfiguration
 
 func Start(c config.BotConfiguration) error {
 	bot, err := discordgo.New("Bot " + c.Token)
@@ -22,21 +22,21 @@ func Start(c config.BotConfiguration) error {
 	}
 
 	botID = u.ID
-	botPrefix = c.Prefix
+	botConfig = c
 
 	bot.AddHandler(messageHandler)
 
 	bot.Open()
 
-	return bot.UpdateListeningStatus("'" + botPrefix + "'")
+	return bot.UpdateListeningStatus("'" + botConfig.Prefix + "'")
 }
 
 func messageHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
-	if m.Author.ID == botID || !strings.HasPrefix(m.Content, botPrefix) {
+	if m.Author.ID == botID || !strings.HasPrefix(m.Content, botConfig.Prefix) {
 		return
 	}
 
-	msg := strings.TrimPrefix(m.Content, botPrefix)
+	msg := strings.TrimPrefix(m.Content, botConfig.Prefix)
 	send := func(msg string) {
 		s.ChannelMessageSend(m.ChannelID, msg)
 	}
@@ -50,9 +50,9 @@ func messageHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 	case "server":
 		switch words[1] {
 		case "start":
-			send("Unimplemented")
+			send(serverStart(botConfig.Server))
 		case "stop":
-			send("Unimplemented")
+			send(serverStop(botConfig.Server))
 		default:
 			send(help())
 		}

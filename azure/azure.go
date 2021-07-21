@@ -10,6 +10,12 @@ import (
 	"strings"
 )
 
+const (
+	outTypeJSON = iota
+	outTypeString
+	outTypeNil
+)
+
 func azCmd(args ...string) *exec.Cmd {
 	cmd := exec.Command("az")
 	cmd.Env = os.Environ()
@@ -40,7 +46,7 @@ func azStart(c chan string, args ...string) error {
 	return nil
 }
 
-func az(result interface{}, args ...string) error {
+func az(outType int, result interface{}, args ...string) error {
 	cmd := azCmd(args...)
 
 	out, err := cmd.CombinedOutput()
@@ -48,14 +54,15 @@ func az(result interface{}, args ...string) error {
 		return errors.New(string(out))
 	}
 
-	if result == nil {
-		return nil
-	}
-
-	if _, ok := result.(string); ok {
+	switch outType {
+	case outTypeJSON:
+		if err := json.Unmarshal(out, result); err != nil {
+			return err
+		}
+	case outTypeString:
 		result = string(out)
-		return nil
+	case outTypeNil:
 	}
 
-	return json.Unmarshal(out, result)
+	return nil
 }
