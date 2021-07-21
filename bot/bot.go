@@ -28,7 +28,7 @@ func Start(c config.BotConfiguration) error {
 
 	bot.Open()
 
-	return nil
+	return bot.UpdateListeningStatus("'" + botPrefix + "'")
 }
 
 func messageHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
