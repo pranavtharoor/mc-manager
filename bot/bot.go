@@ -2,6 +2,7 @@ package bot
 
 import (
 	"strings"
+	"time"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/pranavtharoor/mc-manager/config"
@@ -27,6 +28,14 @@ func Start(c config.BotConfiguration) error {
 	bot.AddHandler(messageHandler)
 
 	bot.Open()
+
+	ticker := time.NewTicker(5 * time.Hour)
+	go func() {
+		for {
+			<-ticker.C
+			_ = azureAccount()
+		}
+	}()
 
 	return bot.UpdateListeningStatus("'" + botConfig.Prefix + "'")
 }
