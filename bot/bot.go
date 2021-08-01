@@ -41,7 +41,8 @@ func Start(c config.BotConfiguration) error {
 }
 
 func messageHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
-	if m.Author.ID == botID || !strings.HasPrefix(m.Content, botConfig.Prefix) {
+	m.Content = strings.ToLower(m.Content)
+	if m.Author.ID == botID || !strings.HasPrefix(m.Content, strings.ToLower(botConfig.Prefix)) {
 		return
 	}
 
