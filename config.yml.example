@@ -4,3 +4,10 @@ bot:
   server:
     resourceGroup:
     name:
+  easterEggs:
+    replyEgg:
+      lookFor:
+      sayStart:
+      sayEnd:
+      tagUser:
+      replyTo:

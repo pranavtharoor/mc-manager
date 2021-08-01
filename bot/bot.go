@@ -1,6 +1,8 @@
 package bot
 
 import (
+	"fmt"
+	"regexp"
 	"strings"
 	"time"
 
@@ -26,6 +28,7 @@ func Start(c config.BotConfiguration) error {
 	botConfig = c
 
 	bot.AddHandler(messageHandler)
+	bot.AddHandler(easterEggHandler)
 
 	bot.Open()
 
@@ -79,5 +82,33 @@ func messageHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 		}
 	default:
 		send(help())
+	}
+}
+
+func easterEggHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
+	if botConfig.EasterEggs.ReplyEgg.Enabled {
+		lookFor := strings.TrimSpace(botConfig.EasterEggs.ReplyEgg.LookFor)
+		msg := strings.ToLower(m.Content)
+		sayStart := botConfig.EasterEggs.ReplyEgg.SayStart
+		sayEnd := botConfig.EasterEggs.ReplyEgg.SayEnd
+		replyTo := botConfig.EasterEggs.ReplyEgg.ReplyTo
+		tagUser := botConfig.EasterEggs.ReplyEgg.TagUser
+		if matched, err := regexp.MatchString(lookFor, msg); m.Author.ID != botID && err == nil && matched {
+			if replyTo != "" && replyTo == m.Author.ID {
+				reply := ""
+				if tagUser {
+					reply = fmt.Sprintf("%s<@%s>%s", sayStart, replyTo, sayEnd)
+				} else {
+					reply = fmt.Sprintf("%s%s", sayStart, sayEnd)
+				}
+				s.ChannelMessageSend(m.ChannelID, reply)
+			} else if tagUser {
+				reply := fmt.Sprintf("%s<@%s>%s", sayStart, m.Author.ID, sayEnd)
+				s.ChannelMessageSend(m.ChannelID, reply)
+			} else {
+				reply := fmt.Sprintf("%s%s", sayStart, sayEnd)
+				s.ChannelMessageSend(m.ChannelID, reply)
+			}
+		}
 	}
 }

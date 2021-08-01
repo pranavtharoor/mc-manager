@@ -11,9 +11,10 @@ type Configuration struct {
 }
 
 type BotConfiguration struct {
-	Token  string              `mapstructure:"token"`
-	Prefix string              `mapstructure:"prefix"`
-	Server ServerConfiguration `mapstructure:"server"`
+	Token      string                  `mapstructure:"token"`
+	Prefix     string                  `mapstructure:"prefix"`
+	Server     ServerConfiguration     `mapstructure:"server"`
+	EasterEggs EasterEggsConfiguration `mapstructure:"easterEggs"`
 }
 
 type ServerConfiguration struct {
@@ -21,11 +22,30 @@ type ServerConfiguration struct {
 	Name          string `mapstructure:"name"`
 }
 
+type EasterEggsConfiguration struct {
+	ReplyEgg ReplyEggConfiguration `mapstructure:"replyEgg"`
+}
+
+type ReplyEggConfiguration struct {
+	Enabled  bool   `mapstructure:"enabled"`
+	LookFor  string `mapstructure:"lookFor"`
+	SayStart string `mapstructure:"sayStart"`
+	SayEnd   string `mapstructure:"sayEnd"`
+	TagUser  bool   `mapstructure:"tagUser"`
+	ReplyTo  string `mapstructure:"replyTo"`
+}
+
 func setDefaults() {
 	viper.SetDefault("bot.token", "")
 	viper.SetDefault("bot.prefix", "!")
 	viper.SetDefault("bot.server.resourceGroup", "")
 	viper.SetDefault("bot.server.name", "")
+	viper.SetDefault("bot.easterEggs.replyEgg.enabled", false)
+	viper.SetDefault("bot.easterEggs.replyEgg.lookFor", "")
+	viper.SetDefault("bot.easterEggs.replyEgg.sayStart", "")
+	viper.SetDefault("bot.easterEggs.replyEgg.sayEnd", "")
+	viper.SetDefault("bot.easterEggs.replyEgg.tagUser", true)
+	viper.SetDefault("bot.easterEggs.replyEgg.replyTo", "")
 }
 
 func Read() (Configuration, error) {
