@@ -118,7 +118,7 @@ func easterEggHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 func conversationHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 	isMentioned := false
 	for _, user := range m.Mentions {
-		if user.Bot {
+		if user.Bot && user.ID == botID {
 			isMentioned = true
 			break
 		}
@@ -141,7 +141,7 @@ func conversationHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 		message := messages[i]
 		isMentioned := false
 		for _, user := range message.Mentions {
-			if user.Bot {
+			if user.Bot && user.ID == botID {
 				isMentioned = true
 				break
 			}
