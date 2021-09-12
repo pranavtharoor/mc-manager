@@ -29,6 +29,7 @@ func Start(c config.BotConfiguration) error {
 
 	bot.AddHandler(messageHandler)
 	bot.AddHandler(easterEggHandler)
+	bot.AddHandler(conversationHandler)
 
 	bot.Open()
 
@@ -48,7 +49,7 @@ func messageHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if m.Author.ID == botID || !strings.HasPrefix(m.Content, strings.ToLower(botConfig.Prefix)) {
 		return
 	}
-
+	s.ChannelTyping(m.ChannelID)
 	msg := strings.TrimPrefix(m.Content, botConfig.Prefix)
 	send := func(msg string) {
 		s.ChannelMessageSend(m.ChannelID, msg)
@@ -94,6 +95,7 @@ func easterEggHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 		replyTo := botConfig.EasterEggs.ReplyEgg.ReplyTo
 		tagUser := botConfig.EasterEggs.ReplyEgg.TagUser
 		if matched, err := regexp.MatchString(lookFor, msg); m.Author.ID != botID && err == nil && matched {
+			s.ChannelTyping(m.ChannelID)
 			if replyTo != "" && replyTo == m.Author.ID {
 				reply := ""
 				if tagUser {
@@ -111,4 +113,46 @@ func easterEggHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 			}
 		}
 	}
+}
+
+func conversationHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
+	isMentioned := false
+	for _, user := range m.Mentions {
+		if user.Bot {
+			isMentioned = true
+			break
+		}
+	}
+	if !isMentioned || m.Author.ID == botID {
+		return
+	}
+	s.ChannelTyping(m.ChannelID)
+	messages, err := s.ChannelMessages(m.ChannelID, botConfig.Conversation.ContextLength+1, "", "", "")
+	if err != nil {
+		s.ChannelMessageSend(m.ChannelID, err.Error())
+	}
+	if len(messages) > 0 {
+		messages = messages[:len(messages)-1]
+	}
+	replacer := regexp.MustCompile(`<@\!.*?>`)
+	var pastUserInputs []string
+	var generatedResponses []string
+	for i := len(messages) - 1; i >= 0; i-- {
+		message := messages[i]
+		isMentioned := false
+		for _, user := range message.Mentions {
+			if user.Bot {
+				isMentioned = true
+				break
+			}
+		}
+		content := replacer.ReplaceAllString(message.Content, "")
+		if message.Author.ID == botID {
+			generatedResponses = append(generatedResponses, content)
+		} else if isMentioned {
+			pastUserInputs = append(pastUserInputs, content)
+		}
+	}
+	text := replacer.ReplaceAllString(m.Content, "")
+	s.ChannelMessageSend(m.ChannelID, conversation(botConfig.Conversation, text, pastUserInputs, generatedResponses, 0))
 }

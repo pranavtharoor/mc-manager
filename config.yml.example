@@ -11,3 +11,11 @@ bot:
       sayEnd:
       tagUser:
       replyTo:
+  conversation:
+    url:
+    token:
+    topK:
+    topP:
+    temperature:
+    repetitionPenalty:
+    contextLength:

@@ -2,5 +2,5 @@ package bot
 
 // TODO: complete help function
 func help() string {
-	return "Commands:\n```server start\nserver stop\n\nazure login\nazure logout\nazure account```"
+	return "Commands:\n```server start\nserver stop\n\nazure login\nazure logout\nazure account\n\n@ me to talk to me :D```"
 }

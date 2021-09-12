@@ -11,10 +11,11 @@ type Configuration struct {
 }
 
 type BotConfiguration struct {
-	Token      string                  `mapstructure:"token"`
-	Prefix     string                  `mapstructure:"prefix"`
-	Server     ServerConfiguration     `mapstructure:"server"`
-	EasterEggs EasterEggsConfiguration `mapstructure:"easterEggs"`
+	Token        string                    `mapstructure:"token"`
+	Prefix       string                    `mapstructure:"prefix"`
+	Server       ServerConfiguration       `mapstructure:"server"`
+	EasterEggs   EasterEggsConfiguration   `mapstructure:"easterEggs"`
+	Conversation ConversationConfiguration `mapstructure:"conversation"`
 }
 
 type ServerConfiguration struct {
@@ -35,6 +36,16 @@ type ReplyEggConfiguration struct {
 	ReplyTo  string `mapstructure:"replyTo"`
 }
 
+type ConversationConfiguration struct {
+	URL               string  `mapstructure:"url"`
+	Token             string  `mapstructure:"token"`
+	TopK              float32 `mapstructure:"topK"`
+	TopP              float32 `mapstructure:"topP"`
+	Temperature       float32 `mapstructure:"temperature"`
+	RepetitionPenalty float32 `mapstructure:"repetitionPenalty"`
+	ContextLength     int     `mapstructure:"contextLength"`
+}
+
 func setDefaults() {
 	viper.SetDefault("bot.token", "")
 	viper.SetDefault("bot.prefix", "!")
@@ -46,6 +57,13 @@ func setDefaults() {
 	viper.SetDefault("bot.easterEggs.replyEgg.sayEnd", "")
 	viper.SetDefault("bot.easterEggs.replyEgg.tagUser", true)
 	viper.SetDefault("bot.easterEggs.replyEgg.replyTo", "")
+	viper.SetDefault("bot.conversation.url", "")
+	viper.SetDefault("bot.conversation.token", "")
+	viper.SetDefault("bot.conversation.topK", 50)
+	viper.SetDefault("bot.conversation.topP", 0.95)
+	viper.SetDefault("bot.conversation.temperature", 0.5)
+	viper.SetDefault("bot.conversation.repetitionPenalty", 1.3)
+	viper.SetDefault("bot.conversation.contextLength", 10)
 }
 
 func Read() (Configuration, error) {
