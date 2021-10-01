@@ -16,6 +16,7 @@ type BotConfiguration struct {
 	Server       ServerConfiguration       `mapstructure:"server"`
 	EasterEggs   EasterEggsConfiguration   `mapstructure:"easterEggs"`
 	Conversation ConversationConfiguration `mapstructure:"conversation"`
+	Dj           DjConfiguration           `mapstructure:"dj"`
 }
 
 type ServerConfiguration struct {
@@ -46,6 +47,10 @@ type ConversationConfiguration struct {
 	ContextLength     int     `mapstructure:"contextLength"`
 }
 
+type DjConfiguration struct {
+	YoutubeToken string `mapstructure:"youtubeToken"`
+}
+
 func setDefaults() {
 	viper.SetDefault("bot.token", "")
 	viper.SetDefault("bot.prefix", "!")
@@ -64,6 +69,7 @@ func setDefaults() {
 	viper.SetDefault("bot.conversation.temperature", 0.5)
 	viper.SetDefault("bot.conversation.repetitionPenalty", 1.3)
 	viper.SetDefault("bot.conversation.contextLength", 10)
+	viper.SetDefault("bot.dj.youtubeToken", "")
 }
 
 func Read() (Configuration, error) {

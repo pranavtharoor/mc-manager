@@ -19,3 +19,5 @@ bot:
     temperature:
     repetitionPenalty:
     contextLength:
+  dj:
+    youtubeToken:

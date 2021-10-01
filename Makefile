@@ -1,4 +1,5 @@
 .DEFAULT_GOAL := build
+CONFIG_FILE := config.yml
 
 clean:
 	rm -rf bin/*
@@ -12,3 +13,10 @@ run:
 fix:
 	gofmt -w ./
 	go mod tidy
+
+docker_build:
+	docker build -t mc-manager .
+
+docker_run:
+	[ -f ${PWD}/$(CONFIG_FILE) ] && exit
+	docker run -it -v ${PWD}/$(CONFIG_FILE):/app/$(CONFIG_FILE) --entrypoint=./mcbot  mc-manager
