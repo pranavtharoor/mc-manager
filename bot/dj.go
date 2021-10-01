@@ -56,7 +56,16 @@ func djPlay(c config.DjConfiguration, stereo *music.Stereo, searchOrUrl string, 
 
 func djList(stereo *music.Stereo) string {
 	songs := stereo.GetQueue()
-	output := "Queue:\n"
+	nowPlaying := stereo.GetNowPlaying()
+	output := "Now Playing: "
+	if nowPlaying == nil {
+		output = output + "-\nQueue: "
+	} else {
+		output = output + nowPlaying.Title + "\nQueue: "
+	}
+	if len(songs) == 0 {
+		return output + "-"
+	}
 	for i, song := range songs {
 		output += fmt.Sprintf("\n%d. %s", i+1, song.Title)
 	}

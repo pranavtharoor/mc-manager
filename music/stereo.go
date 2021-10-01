@@ -14,6 +14,7 @@ type Stereo struct {
 	encodeSession      *dca.EncodeSession
 	done               chan error
 	queue              []*Song
+	nowPlaying         *Song
 }
 
 func NewStereo(getVoiceConnection func() *discordgo.VoiceConnection) *Stereo {
@@ -78,17 +79,18 @@ func (s *Stereo) playNext() error {
 	if len(s.queue) == 0 {
 		return nil
 	}
-	url := s.queue[0].Url
+	song := s.queue[0]
 	s.queue = s.queue[1:]
 	options := dca.StdEncodeOptions
 	options.RawOutput = true
 	options.Application = "lowdelay"
 
-	encodeSession, err := dca.EncodeFile(url, options)
+	encodeSession, err := dca.EncodeFile(song.Url, options)
 	if err != nil {
 		return err
 	}
 
+	s.nowPlaying = song
 	s.encodeSession = encodeSession
 	s.done = make(chan error)
 	s.streamingSession = dca.NewStream(encodeSession, s.getVoiceConnection(), s.done)
@@ -108,6 +110,7 @@ func (s *Stereo) cleanup() {
 	s.done = nil
 	s.streamingSession = nil
 	s.encodeSession = nil
+	s.nowPlaying = nil
 }
 
 func (s *Stereo) ClearQueue() {
@@ -116,6 +119,10 @@ func (s *Stereo) ClearQueue() {
 
 func (s *Stereo) GetQueue() []*Song {
 	return s.queue
+}
+
+func (s *Stereo) GetNowPlaying() *Song {
+	return s.nowPlaying
 }
 
 func (s *Stereo) startAutoPlayer() {
