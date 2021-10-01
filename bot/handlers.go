@@ -163,17 +163,21 @@ func djHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 	input := ""
 	index := 0
 
+	originalCase := m.Content
 	m.Content = strings.ToLower(m.Content)
 	if m.Author.ID == botID || !strings.HasPrefix(m.Content, strings.ToLower(botConfig.Prefix)) {
 		return
 	}
 	msg := strings.TrimPrefix(m.Content, botConfig.Prefix)
+	originalCase = originalCase[len(originalCase)-len(msg):]
+
 	send := func(msg string) {
 		if msg != "" {
 			s.ChannelMessageSend(m.ChannelID, msg)
 		}
 	}
 	words := strings.Fields(msg)
+	originalCaseWords := strings.Fields(originalCase)
 
 	if len(words) > 0 {
 		command := words[0]
@@ -207,7 +211,7 @@ func djHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 				send("Give me a song")
 				return
 			}
-			input = strings.Join(words[1:], " ")
+			input = strings.Join(originalCaseWords[2:], " ")
 		case "insert":
 			fallthrough
 		case "remove":
@@ -216,13 +220,13 @@ func djHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 				return
 			}
 			var err error
-			index, err = strconv.Atoi(words[2])
+			index, err = strconv.Atoi(originalCaseWords[2])
 			if err != nil {
 				send("Give me a index")
 				return
 			}
 			index = index - 1
-			input = strings.Join(words[2:], " ")
+			input = strings.Join(originalCaseWords[2:], " ")
 		}
 	}
 
