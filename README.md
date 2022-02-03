@@ -2,7 +2,8 @@
 
 So far, it's meant to be a Discord bot to:
 * start/stop an azure vm (running Minecraft) through a user account (ie. without AAD access)
-* switch between Minecraft worlds running on the server
+* stream audio from youtube
+* engage in small talk
 
 # Dev Setup
 Follow this to set up a dev environment:
